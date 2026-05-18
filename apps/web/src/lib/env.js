@@ -4,4 +4,12 @@ const EnvSchema = z.object({
     VITE_AZURE_AD_TENANT_ID: z.string().min(1),
     VITE_AZURE_AD_CLIENT_ID: z.string().min(1),
 });
-export const env = EnvSchema.parse(import.meta.env);
+export const envParseResult = EnvSchema.safeParse(import.meta.env);
+export const env = envParseResult.success
+    ? envParseResult.data
+    : {
+        VITE_API_URL: "http://localhost:4000",
+        VITE_AZURE_AD_TENANT_ID: "",
+        VITE_AZURE_AD_CLIENT_ID: "",
+    };
+export const envError = envParseResult.success ? null : envParseResult.error;
