@@ -8,7 +8,6 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import Grid from "@mui/material/Unstable_Grid2";
 import DownloadIcon from "@mui/icons-material/Download";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import type { DashboardSummary, EmployeeDailyProductivity } from "../../lib/types";
@@ -154,8 +153,8 @@ export function DashboardPage({ api }: { api: AxiosInstance }) {
 
   return (
     <Stack spacing={2}>
-      <Grid container spacing={2}>
-        <Grid xs={12} md={3}>
+      <div className="grid grid-cols-12 gap-4">
+        <div className="col-span-12 md:col-span-3">
           <Card>
             <CardContent>
               <Typography variant="overline">Employees Active Today</Typography>
@@ -164,8 +163,8 @@ export function DashboardPage({ api }: { api: AxiosInstance }) {
               </Typography>
             </CardContent>
           </Card>
-        </Grid>
-        <Grid xs={12} md={3}>
+        </div>
+        <div className="col-span-12 md:col-span-3">
           <Card>
             <CardContent>
               <Typography variant="overline">Tasks Closed Today</Typography>
@@ -174,8 +173,8 @@ export function DashboardPage({ api }: { api: AxiosInstance }) {
               </Typography>
             </CardContent>
           </Card>
-        </Grid>
-        <Grid xs={12} md={3}>
+        </div>
+        <div className="col-span-12 md:col-span-3">
           <Card>
             <CardContent>
               <Typography variant="overline">Total Estimated Hours</Typography>
@@ -184,8 +183,8 @@ export function DashboardPage({ api }: { api: AxiosInstance }) {
               </Typography>
             </CardContent>
           </Card>
-        </Grid>
-        <Grid xs={12} md={3}>
+        </div>
+        <div className="col-span-12 md:col-span-3">
           <Card>
             <CardContent>
               <Typography variant="overline">Total Actual Hours Logged</Typography>
@@ -194,9 +193,9 @@ export function DashboardPage({ api }: { api: AxiosInstance }) {
               </Typography>
             </CardContent>
           </Card>
-        </Grid>
+        </div>
 
-        <Grid xs={12} md={3}>
+        <div className="col-span-12 md:col-span-3">
           <Card>
             <CardContent>
               <Typography variant="overline">Productivity %</Typography>
@@ -205,8 +204,8 @@ export function DashboardPage({ api }: { api: AxiosInstance }) {
               </Typography>
             </CardContent>
           </Card>
-        </Grid>
-        <Grid xs={12} md={3}>
+        </div>
+        <div className="col-span-12 md:col-span-3">
           <Card>
             <CardContent>
               <Typography variant="overline">Employees Below 8 Hours</Typography>
@@ -215,8 +214,8 @@ export function DashboardPage({ api }: { api: AxiosInstance }) {
               </Typography>
             </CardContent>
           </Card>
-        </Grid>
-        <Grid xs={12} md={3}>
+        </div>
+        <div className="col-span-12 md:col-span-3">
           <Card>
             <CardContent>
               <Typography variant="overline">Employees Above 8 Hours</Typography>
@@ -225,8 +224,8 @@ export function DashboardPage({ api }: { api: AxiosInstance }) {
               </Typography>
             </CardContent>
           </Card>
-        </Grid>
-        <Grid xs={12} md={3}>
+        </div>
+        <div className="col-span-12 md:col-span-3">
           <Card>
             <CardContent>
               <Typography variant="overline">Average Efficiency</Typography>
@@ -237,8 +236,8 @@ export function DashboardPage({ api }: { api: AxiosInstance }) {
               </Typography>
             </CardContent>
           </Card>
-        </Grid>
-      </Grid>
+        </div>
+      </div>
 
       <Card>
         <CardContent>
