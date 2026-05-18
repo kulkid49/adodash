@@ -1,0 +1,30 @@
+{
+  "installCommand": "npm install",
+  "buildCommand": "npm run build --prefix apps/web",
+  "outputDirectory": "apps/web/dist",
+  "functions": {
+    "api/cron/sync.ts": {
+      "maxDuration": 60
+    },
+    "api/[...path].ts": {
+      "maxDuration": 30
+    }
+  },
+  "crons": [
+    {
+      "path": "/api/cron/sync",
+      "schedule": "*/5 * * * *"
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
+

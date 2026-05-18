@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { AxiosInstance } from "axios";
 import {
   AppBar,
@@ -23,8 +23,6 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import LogoutIcon from "@mui/icons-material/Logout";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
-import { io, type Socket } from "socket.io-client";
-import { env } from "../lib/env";
 import type { DashboardSummary } from "../lib/types";
 import { useAppTheme } from "../theme/AppThemeProvider";
 import type { NavKey } from "./App";
@@ -51,8 +49,6 @@ export function Shell({
   const [syncStatus, setSyncStatus] = useState<"IDLE" | "RUNNING" | "SUCCESS" | "FAILED">("IDLE");
   const [lastSyncAt, setLastSyncAt] = useState<string | null>(null);
 
-  const socket = useMemo<Socket>(() => io(env.VITE_API_URL, { transports: ["websocket"] }), []);
-
   async function refresh() {
     setSyncStatus("RUNNING");
     const res = await api.get<{ summary: DashboardSummary }>("/dashboard/summary");
@@ -71,20 +67,6 @@ export function Shell({
     }, 5 * 60 * 1000);
     return () => window.clearInterval(id);
   }, []);
-
-  useEffect(() => {
-    socket.on("sync:status", (payload) => {
-      if (payload?.status === "RUNNING") setSyncStatus("RUNNING");
-    });
-    socket.on("sync:completed", (payload) => {
-      if (payload?.status === "SUCCESS") setSyncStatus("SUCCESS");
-      if (payload?.status === "FAILED") setSyncStatus("FAILED");
-      void refresh();
-    });
-    return () => {
-      socket.disconnect();
-    };
-  }, [socket]);
 
   const title =
     nav === "dashboard"

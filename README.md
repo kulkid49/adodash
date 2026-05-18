@@ -11,7 +11,7 @@ Enterprise-grade, real-time dashboard that aggregates Azure DevOps productivity 
   - Efficiency % = (Estimated / Actual) × 100
   - Daily utilization (< 8 underutilized, = 8 optimal, > 8 overutilized)
 - Highlights employees below 8 hours (row-level color coding)
-- WebSocket-based live refresh + 5-minute polling fallback
+- 5-minute polling refresh
 - Microsoft OAuth login (Azure AD) for application access
 - PAT support for Azure DevOps data access (admin-configured)
 - RBAC (Admin / Project Manager / Team Lead / Employee)
@@ -22,7 +22,7 @@ Enterprise-grade, real-time dashboard that aggregates Azure DevOps productivity 
 ## Tech Stack
 
 - Frontend: React + TypeScript, Vite, Tailwind CSS, Material UI, Recharts
-- Backend: Node.js + Express (TypeScript), Azure DevOps REST APIs, WebSocket (Socket.IO)
+- Backend: Node.js + Express (TypeScript), Azure DevOps REST APIs
 - Database: PostgreSQL + Prisma ORM
 - Deploy: Docker + docker-compose, Kubernetes manifests
 
@@ -124,7 +124,7 @@ After logging in as an Admin:
    - PAT: recommended for org-wide data access
 3. Click **Save & Sync Now**
 
-The backend also runs a background sync every 5 minutes (requires a PAT unless you implement delegated Azure DevOps access tokens).
+For production, run sync on a schedule using a platform scheduler (for example, Vercel Cron) and keep the Admin “Sync Now” button for manual runs.
 
 ## API Endpoints
 
