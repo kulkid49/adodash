@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adodash-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: adodash-api
+  template:
+    metadata:
+      labels:
+        app: adodash-api
+    spec:
+      containers:
+        - name: api
+          image: adodash-api:latest
+          ports:
+            - containerPort: 4000
+          env:
+            - name: PORT
+              value: "4000"
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: adodash-secrets
+                  key: databaseUrl
+            - name: CORS_ORIGIN
+              valueFrom:
+                configMapKeyRef:
+                  name: adodash-config
+                  key: corsOrigin
+            - name: ENCRYPTION_KEY_BASE64
+              valueFrom:
+                secretKeyRef:
+                  name: adodash-secrets
+                  key: encryptionKeyBase64
+            - name: AZURE_AD_TENANT_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: adodash-config
+                  key: azureAdTenantId
+            - name: AZURE_AD_CLIENT_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: adodash-config
+                  key: azureAdClientId
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: adodash-api
+spec:
+  selector:
+    app: adodash-api
+  ports:
+    - name: http
+      port: 4000
+      targetPort: 4000
+

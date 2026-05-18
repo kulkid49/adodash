@@ -1,0 +1,24 @@
+{
+  "name": "adodash",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Azure DevOps Productivity Dashboard",
+  "scripts": {
+    "dev": "npm run dev --prefix apps/api & npm run dev --prefix apps/web",
+    "build": "npm run build --prefix apps/api && npm run build --prefix apps/web",
+    "lint": "npm run lint --prefix apps/api && npm run lint --prefix apps/web",
+    "format": "npm run format --prefix apps/api && npm run format --prefix apps/web"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kulkid49/adodash.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/kulkid49/adodash/issues"
+  },
+  "homepage": "https://github.com/kulkid49/adodash#readme"
+}

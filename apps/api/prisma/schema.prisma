@@ -1,0 +1,176 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  PROJECT_MANAGER
+  TEAM_LEAD
+  EMPLOYEE
+}
+
+enum AdoAuthType {
+  PAT
+  DELEGATED_AAD
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  role         UserRole @default(EMPLOYEE)
+  azureOid     String?  @unique
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  connections  OrganizationConnection[] @relation("ConnectionCreatedBy")
+  projectAccess UserProjectAccess[]
+  auditLogs    AuditLog[]
+}
+
+model OrganizationConnection {
+  id                  String      @id @default(cuid())
+  organizationName    String
+  organizationUrl     String
+  authType            AdoAuthType
+  encryptedPat        String?
+  isActive            Boolean     @default(true)
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
+
+  createdByUserId     String
+  createdBy           User        @relation("ConnectionCreatedBy", fields: [createdByUserId], references: [id])
+
+  projects            Project[]
+  syncLogs            SyncLog[]
+
+  @@unique([organizationName, organizationUrl])
+}
+
+model Project {
+  id             String   @id @default(cuid())
+  adoProjectId   String   @unique
+  name           String
+  state          String?
+  visibility     String?
+  lastSyncedAt   DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  connectionId   String
+  connection     OrganizationConnection @relation(fields: [connectionId], references: [id])
+
+  userAccess     UserProjectAccess[]
+  workItems      WorkItem[]
+}
+
+model UserProjectAccess {
+  id         String   @id @default(cuid())
+  createdAt  DateTime @default(now())
+
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+
+  projectId  String
+  project    Project  @relation(fields: [projectId], references: [id])
+
+  @@unique([userId, projectId])
+  @@index([projectId])
+}
+
+model Employee {
+  id             String   @id @default(cuid())
+  adoDescriptor  String?  @unique
+  displayName    String
+  uniqueName     String?  @unique
+  mail           String?  @unique
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  workItems      WorkItem[] @relation("WorkItemAssignee")
+  snapshots      ProductivitySnapshot[]
+}
+
+model WorkItem {
+  id               String   @id @default(cuid())
+  adoWorkItemId    Int
+  title            String
+  state            String
+  workItemType     String
+  areaPath         String?
+  iterationPath    String?
+
+  createdDate      DateTime
+  changedDate      DateTime
+
+  originalEstimate Float?
+  completedWork    Float?
+  remainingWork    Float?
+
+  baselineDate     DateTime?
+  baselineCompletedWork Float?
+
+  lastSeenAt       DateTime @default(now())
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  projectId        String
+  project          Project  @relation(fields: [projectId], references: [id])
+
+  assignedToId     String?
+  assignedTo       Employee? @relation("WorkItemAssignee", fields: [assignedToId], references: [id])
+
+  @@unique([adoWorkItemId, projectId])
+  @@index([changedDate])
+}
+
+model ProductivitySnapshot {
+  id                 String   @id @default(cuid())
+  date               DateTime
+  tasksCreatedToday  Int      @default(0)
+  tasksUpdatedToday  Int      @default(0)
+  tasksClosedToday   Int      @default(0)
+  estimatedHours     Float    @default(0)
+  actualHoursLogged  Float    @default(0)
+  remainingHours     Float    @default(0)
+  efficiencyPercent  Float?
+  varianceHours      Float    @default(0)
+  projectCount       Int      @default(0)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  employeeId         String
+  employee           Employee @relation(fields: [employeeId], references: [id])
+
+  @@unique([employeeId, date])
+  @@index([date])
+}
+
+model SyncLog {
+  id              String   @id @default(cuid())
+  startedAt       DateTime @default(now())
+  finishedAt      DateTime?
+  status          String
+  message         String?
+  projectsSynced  Int      @default(0)
+  workItemsSynced Int      @default(0)
+  employeesSynced Int      @default(0)
+
+  connectionId    String
+  connection      OrganizationConnection @relation(fields: [connectionId], references: [id])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  action     String
+  details    Json?
+  createdAt  DateTime @default(now())
+
+  userId     String
+  user       User @relation(fields: [userId], references: [id])
+}

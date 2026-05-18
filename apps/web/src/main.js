@@ -1,0 +1,10 @@
+import { jsx as _jsx } from "react/jsx-runtime";
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./styles.css";
+import { AppThemeProvider } from "./theme/AppThemeProvider";
+import { AuthProvider } from "./auth/AuthProvider";
+import { App } from "./ui/App";
+const saved = localStorage.getItem("adodash:theme");
+document.documentElement.classList.toggle("dark", saved === "dark");
+ReactDOM.createRoot(document.getElementById("root")).render(_jsx(React.StrictMode, { children: _jsx(AppThemeProvider, { children: _jsx(AuthProvider, { children: _jsx(App, {}) }) }) }));
